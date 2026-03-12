@@ -7,11 +7,10 @@ import pandas as pd
 import streamlit_analytics2 as streamlit_analytics
 
 streamlit_analytics.start_tracking(
-    streamlit_analytics.start_tracking(
-    firestore_key_file=st.secrets["firebase"],
+    firestore_key_file=dict(st.secrets["firebase"]),
     firestore_collection_name="analytics"
 )
-)
+
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="ELISA 4PL Fitting",
