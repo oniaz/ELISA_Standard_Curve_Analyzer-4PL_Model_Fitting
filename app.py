@@ -15,45 +15,51 @@ st.set_page_config(
 # ── Custom CSS ─────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 html, body, [class*="css"] {
-    font-family: 'IBM Plex Sans', sans-serif;
-    background-color: #0d1117;
-    color: #e6edf3;
+    font-family: 'DM Sans', sans-serif;
+    background-color: #f9f9f7 !important;
+    color: #1a1a1a;
+}
+
+/* Kill Streamlit's default dark bg */
+.stApp, section[data-testid="stSidebar"], .main, .block-container {
+    background-color: #f9f9f7 !important;
 }
 
 /* Title */
 .title-block {
-    border-left: 4px solid #e94560;
-    padding: 8px 0 8px 18px;
+    border-left: 3px solid #1a1a1a;
+    padding: 6px 0 6px 16px;
     margin-bottom: 28px;
 }
 .title-block h1 {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 1.7rem;
-    color: #e94560;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.4rem;
+    color: #1a1a1a;
     margin: 0;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    font-weight: 500;
 }
 .title-block p {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    color: #8892a4;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: #999;
     margin: 4px 0 0 0;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 /* Section headers */
 .section-head {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
     letter-spacing: 3px;
-    color: #8892a4;
+    color: #aaa;
     text-transform: uppercase;
     margin-bottom: 10px;
     padding-bottom: 5px;
-    border-bottom: 1px solid #21262d;
+    border-bottom: 1px solid #e8e8e4;
 }
 
 /* Param cards */
@@ -64,95 +70,105 @@ html, body, [class*="css"] {
     margin-bottom: 18px;
 }
 .param-card {
-    background: #161b22;
-    border: 1px solid #21262d;
+    background: #fff;
+    border: 1px solid #e8e8e4;
     border-radius: 6px;
     padding: 10px 14px;
 }
 .param-card .label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: #8892a4;
-    letter-spacing: 1px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: #aaa;
+    letter-spacing: 0.5px;
 }
 .param-card .value {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 1.1rem;
-    color: #53d8fb;
-    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.05rem;
+    color: #1a1a1a;
+    font-weight: 500;
 }
 
 /* Result highlight */
 .result-box {
-    background: #0d2137;
-    border: 1px solid #53d8fb;
-    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #e8e8e4;
+    border-left: 3px solid #1a1a1a;
+    border-radius: 6px;
     padding: 14px 18px;
     margin: 14px 0;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'DM Mono', monospace;
 }
-.result-box .od-label { color: #8892a4; font-size: 0.75rem; }
-.result-box .od-val   { color: #e6edf3; font-size: 1rem; }
-.result-box .arrow    { color: #e94560; font-size: 1.1rem; margin: 0 8px; }
-.result-box .conc-val { color: #4caf84; font-size: 1.2rem; font-weight: 600; }
+.result-box .od-label { color: #aaa; font-size: 0.7rem; }
+.result-box .od-val   { color: #1a1a1a; font-size: 1rem; }
+.result-box .arrow    { color: #888; font-size: 1rem; margin: 0 8px; }
+.result-box .conc-val { color: #1a1a1a; font-size: 1.2rem; font-weight: 600; }
 
 /* Status pills */
 .pill-success {
     display: inline-block;
-    background: #0f2d1f;
-    color: #4caf84;
-    border: 1px solid #4caf84;
-    border-radius: 20px;
+    background: #f0faf5;
+    color: #2d7a55;
+    border: 1px solid #b3dfc7;
+    border-radius: 4px;
     padding: 3px 12px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 1px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
 }
 .pill-warn {
     display: inline-block;
-    background: #2d1f00;
-    color: #f0a500;
-    border: 1px solid #f0a500;
-    border-radius: 20px;
+    background: #fffbf0;
+    color: #a06000;
+    border: 1px solid #f0d080;
+    border-radius: 4px;
     padding: 3px 12px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
 }
 
 /* Streamlit widget overrides */
+input, textarea {
+    background-color: #ffffff !important;
+    border: 1px solid #ddddd8 !important;
+    color: #1a1a1a !important;
+    font-family: 'DM Mono', monospace !important;
+    border-radius: 5px !important;
+}
+input:focus, textarea:focus {
+    border-color: #1a1a1a !important;
+    box-shadow: 0 0 0 1px #1a1a1a !important;
+}
 div[data-testid="stTextInput"] input,
 div[data-testid="stNumberInput"] input {
-    background-color: #0d1117 !important;
-    border: 1px solid #21262d !important;
-    color: #e6edf3 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-    border-radius: 6px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #ddddd8 !important;
+    color: #1a1a1a !important;
 }
 div[data-testid="stTextInput"] input:focus,
 div[data-testid="stNumberInput"] input:focus {
-    border-color: #e94560 !important;
-    box-shadow: 0 0 0 1px #e94560 !important;
+    border-color: #1a1a1a !important;
+    box-shadow: 0 0 0 1px #1a1a1a !important;
 }
-label { color: #8892a4 !important; font-size: 0.78rem !important; letter-spacing: 0.5px; }
+label { color: #888 !important; font-size: 0.75rem !important; letter-spacing: 0.3px; }
 
 /* Buttons */
 div[data-testid="stButton"] button {
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-weight: 600 !important;
-    letter-spacing: 1px !important;
-    border-radius: 6px !important;
+    font-family: 'DM Mono', monospace !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px !important;
+    border-radius: 5px !important;
     transition: all 0.15s ease !important;
 }
 
 /* Dataframe */
 div[data-testid="stDataFrame"] {
-    border: 1px solid #21262d;
-    border-radius: 8px;
+    border: 1px solid #e8e8e4;
+    border-radius: 6px;
     overflow: hidden;
 }
 
 /* Divider */
-hr { border-color: #21262d !important; margin: 20px 0 !important; }
+hr { border-color: #e8e8e4 !important; margin: 20px 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -170,35 +186,35 @@ def fit_model(concentration, OD):
 # ── Plot ───────────────────────────────────────────────────────────────────────
 def make_figure(A, B, C, D, OD, concentration, OD_sample=None, conc_sample=None):
     fig, ax = plt.subplots(figsize=(9, 5))
-    fig.patch.set_facecolor("#0d1117")
-    ax.set_facecolor("#0d1117")
+    fig.patch.set_facecolor("#f9f9f7")
+    ax.set_facecolor("#ffffff")
 
     x_vals = np.linspace(np.min(concentration), np.max(concentration), 500)
     y_vals = four_param_logistic(x_vals, A, B, C, D)
 
-    ax.plot(y_vals, x_vals, color="#53d8fb", linewidth=2, label="Fitted 4PL Curve", zorder=2)
-    ax.scatter(OD, concentration, color="#e94560", s=65, zorder=3,
-               label="Standard Points", edgecolors="#ffffff", linewidths=0.5)
+    ax.plot(y_vals, x_vals, color="#1a1a1a", linewidth=2, label="Fitted 4PL Curve", zorder=2)
+    ax.scatter(OD, concentration, color="#e03e3e", s=65, zorder=3,
+           label="Standard Points", edgecolors="#fff", linewidths=0.5)
 
     if OD_sample is not None and conc_sample is not None:
-        ax.scatter([OD_sample], [conc_sample], color="#4caf84", s=100, zorder=4,
+        ax.scatter([OD_sample], [conc_sample], color="#e03e3e", s=100, zorder=4,
                    marker="D", label=f"Sample  ({OD_sample:.3f} → {conc_sample:.2f})",
-                   edgecolors="#ffffff", linewidths=0.7)
-        ax.axhline(conc_sample, color="#4caf84", linewidth=0.8, linestyle="--", alpha=0.4)
-        ax.axvline(OD_sample,   color="#4caf84", linewidth=0.8, linestyle="--", alpha=0.4)
+                   edgecolors="#fff", linewidths=0.7)
+        ax.axhline(conc_sample, color="#2d7a55", linewidth=0.8, linestyle="--", alpha=0.4)
+        ax.axvline(OD_sample,   color="#2d7a55", linewidth=0.8, linestyle="--", alpha=0.4)
 
     for spine in ax.spines.values():
-        spine.set_edgecolor("#21262d")
-    ax.tick_params(colors="#8892a4", labelsize=8)
-    ax.xaxis.label.set_color("#8892a4")
-    ax.yaxis.label.set_color("#8892a4")
+        spine.set_edgecolor("#e8e8e4")
+    ax.tick_params(colors="#aaa", labelsize=8)
+    ax.xaxis.label.set_color("#888")
+    ax.yaxis.label.set_color("#888")
     ax.set_xlabel("OD", fontsize=9, fontfamily="monospace")
     ax.set_ylabel("Concentration", fontsize=9, fontfamily="monospace")
-    ax.set_title("4PL Model Fitting", color="#e6edf3", fontsize=11,
+    ax.set_title("4PL Model Fitting", color="#1a1a1a", fontsize=11,
                  fontfamily="monospace", pad=12)
-    ax.grid(True, linestyle=":", linewidth=0.5, color="#21262d", alpha=0.9)
-    legend = ax.legend(fontsize=8, facecolor="#161b22", edgecolor="#21262d",
-                       labelcolor="#e6edf3", loc="best")
+    ax.grid(True, linestyle=":", linewidth=0.5, color="#e8e8e4", alpha=0.9)
+    legend = ax.legend(fontsize=8, facecolor="#fff", edgecolor="#e8e8e4",
+                       labelcolor="#1a1a1a", loc="best")
     fig.tight_layout(pad=2)
     return fig
 
@@ -207,9 +223,13 @@ for key, val in {
     "model_ready": False,
     "A": None, "B": None, "C": None, "D": None,
     "concentration": None, "OD": None,
-    "results": [],           # list of (od, conc) tuples
+    "results": [],
     "last_od": None,
     "last_conc": None,
+    "input_mode": "bulk",       # "bulk" or "onebyone"
+    "conc_list": [],            # one-by-one concentrations
+    "od_list": [],              # one-by-one ODs (one per conc entry)
+    "new_conc_val": "",
 }.items():
     if key not in st.session_state:
         st.session_state[key] = val
@@ -229,38 +249,136 @@ with left:
     # ── Standard curve inputs
     st.markdown('<div class="section-head">Standard Curve</div>', unsafe_allow_html=True)
 
-    conc_raw = st.text_input(
-        "Concentration values (comma-separated)",
-        placeholder="e.g. 0, 5, 10, 20, 40, 80",
-        key="conc_input"
+    # Mode toggle
+    mode = st.radio(
+        "Input mode",
+        ["Bulk (comma-separated)", "One by one"],
+        horizontal=True,
+        key="input_mode_radio",
+        label_visibility="collapsed"
     )
-    od_raw = st.text_input(
-        "OD values (comma-separated)",
-        placeholder="e.g. 0.05, 0.12, 0.25, 0.48, 0.79, 1.1",
-        key="od_input"
-    )
+    st.session_state.input_mode = "bulk" if mode == "Bulk (comma-separated)" else "onebyone"
 
+    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+
+    conc_final = None
+    od_final   = None
+
+    # ── BULK MODE
+    if st.session_state.input_mode == "bulk":
+        conc_raw = st.text_input(
+            "Concentration values (comma-separated)",
+            placeholder="e.g. 0, 5, 10, 20, 40, 80",
+            key="conc_input"
+        )
+        od_raw = st.text_input(
+            "OD values (comma-separated)",
+            placeholder="e.g. 0.05, 0.12, 0.25, 0.48, 0.79, 1.1",
+            key="od_input"
+        )
+        if conc_raw and od_raw:
+            try:
+                conc_final = [float(v.strip()) for v in conc_raw.split(",")]
+                od_final   = [float(v.strip()) for v in od_raw.split(",")]
+            except Exception:
+                pass
+
+    # ── ONE-BY-ONE MODE
+    else:
+        # Start with one pair if empty
+        if not st.session_state.conc_list:
+            st.session_state.conc_list = [None]
+            st.session_state.od_list   = [None]
+
+        to_remove = None
+        for i in range(len(st.session_state.conc_list)):
+            st.markdown(
+                f"<div style='font-family:IBM Plex Mono,monospace;font-size:0.65rem;"
+                f"color:#aaa;letter-spacing:2px;margin-bottom:4px;margin-top:{'0' if i==0 else '14px'}'"
+                f">POINT {i+1}</div>",
+                unsafe_allow_html=True
+            )
+            c_col, od_col, x_col = st.columns([2, 2, 0.5])
+            with c_col:
+                c_val = st.text_input(
+                    "Concentration", placeholder="e.g. 10",
+                    key=f"conc_row_{i}",
+                    value="" if st.session_state.conc_list[i] is None else str(st.session_state.conc_list[i]),
+                )
+                if c_val.strip():
+                    try:
+                        st.session_state.conc_list[i] = float(c_val.strip())
+                    except Exception:
+                        pass
+            with od_col:
+                o_val = st.text_input(
+                    "OD", placeholder="e.g. 0.48",
+                    key=f"od_row_{i}",
+                    value="" if st.session_state.od_list[i] is None else str(st.session_state.od_list[i]),
+                )
+                if o_val.strip():
+                    try:
+                        st.session_state.od_list[i] = float(o_val.strip())
+                    except Exception:
+                        pass
+            with x_col:
+                st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+                if len(st.session_state.conc_list) > 1:
+                    if st.button("✕", key=f"remove_{i}"):
+                        to_remove = i
+
+        if to_remove is not None:
+            st.session_state.conc_list.pop(to_remove)
+            st.session_state.od_list.pop(to_remove)
+            st.rerun()
+
+        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+        if st.button("＋  Add another point", use_container_width=True):
+            st.session_state.conc_list.append(None)
+            st.session_state.od_list.append(None)
+            st.rerun()
+
+        # Build final arrays only if all filled
+        all_filled = (
+            all(v is not None for v in st.session_state.conc_list) and
+            all(v is not None for v in st.session_state.od_list) and
+            len(st.session_state.conc_list) >= 2
+        )
+        if all_filled:
+            conc_final = st.session_state.conc_list
+            od_final   = st.session_state.od_list
+
+        if st.button("✕  Reset all", use_container_width=True):
+            st.session_state.conc_list = [None]
+            st.session_state.od_list   = [None]
+            st.rerun()
+
+    # ── Fit button (shared)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
     fit_clicked = st.button("▶  FIT MODEL", type="primary", use_container_width=True)
 
     if fit_clicked:
-        try:
-            conc = np.array([float(v.strip()) for v in conc_raw.split(",")])
-            od   = np.array([float(v.strip()) for v in od_raw.split(",")])
-            if len(conc) != len(od):
-                st.error("Concentration and OD arrays must be the same length.")
-            else:
-                A, B, C, D = fit_model(conc, od)
-                st.session_state.update({
-                    "model_ready": True,
-                    "A": A, "B": B, "C": C, "D": D,
-                    "concentration": conc,
-                    "OD": od,
-                    "last_od": None,
-                    "last_conc": None,
-                })
-                st.markdown('<span class="pill-success">✓ Model fitted</span>', unsafe_allow_html=True)
-        except Exception as e:
-            st.error(f"Error: {e}")
+        if not conc_final or not od_final:
+            st.error("Fill in all values before fitting.")
+        else:
+            try:
+                conc = np.array(conc_final)
+                od   = np.array(od_final)
+                if len(conc) != len(od):
+                    st.error("Concentration and OD arrays must be the same length.")
+                else:
+                    A, B, C, D = fit_model(conc, od)
+                    st.session_state.update({
+                        "model_ready": True,
+                        "A": A, "B": B, "C": C, "D": D,
+                        "concentration": conc,
+                        "OD": od,
+                        "last_od": None,
+                        "last_conc": None,
+                    })
+                    st.markdown('<span class="pill-success">✓ Model fitted</span>', unsafe_allow_html=True)
+            except Exception as e:
+                st.error(f"Error: {e}")
 
     # ── Model parameters display
     if st.session_state.model_ready:
@@ -328,9 +446,9 @@ with right:
         plt.close(fig)
     else:
         st.markdown("""
-        <div style="background:#0d1117; border:1px dashed #21262d; border-radius:8px;
+        <div style="background:#fff; border:1px dashed #ddddd8; border-radius:8px;
                     height:320px; display:flex; align-items:center; justify-content:center;">
-            <span style="color:#8892a4; font-family:'IBM Plex Mono',monospace; font-size:0.85rem;">
+            <span style="color:#bbb; font-family:'DM Mono',monospace; font-size:0.85rem;">
                 Fit a model to see the curve
             </span>
         </div>
