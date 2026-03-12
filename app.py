@@ -19,6 +19,13 @@ st.markdown("""
 
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
+    background-color: #f9f9f7 !important;
+    color: #1a1a1a;
+}
+
+/* Kill Streamlit's default dark bg */
+.stApp, section[data-testid="stSidebar"], .main, .block-container {
+    background-color: #f9f9f7 !important;
 }
 
 /* Title */
@@ -30,6 +37,7 @@ html, body, [class*="css"] {
 .title-block-h1 {
     font-family: 'DM Mono', monospace;
     font-size: 1.4rem;
+    color: #1a1a1a;
     margin: 0;
     letter-spacing: 1px;
     font-weight: 500;
@@ -158,14 +166,12 @@ def four_param_logistic(x, A, B, C, D):
     return D + (A - D) / (1 + (x / C)**B)
 
 def inverse_four_param_logistic(OD, A, B, C, D):
-    # Check sign to avoid silent abs() masking bad inputs
+    # Edge case: corrected OD of 0 means concentration is 0
+    if abs(OD) < 1e-9:
+        return 0.0
     numerator = (A - OD) / (OD - D)
     if numerator <= 0:
-        raise ValueError(
-            f"OD value {OD:.4f} is outside the range of the standard curve "
-            f"(valid range: {min(A,D):.4f} – {max(A,D):.4f}). "
-            "Result would be extrapolated and unreliable."
-        )
+        raise ValueError("OD_OUT_OF_RANGE")
     return C * (numerator ** (1 / B))
 
 def fit_model(concentration, OD):
@@ -239,6 +245,7 @@ for key, val in {
     "r2": None,
     "results": [],
     "last_od": None,
+    "last_raw_od": None,
     "last_conc": None,
     "last_extrapolated": False,
     "input_mode": "bulk",
@@ -246,6 +253,8 @@ for key, val in {
     "od_list": [],
     "new_conc_val": "",
     "fit_count": 0,
+    "zero_od": 0.0,
+    "zero_od": 0.0,
 }.items():
     if key not in st.session_state:
         st.session_state[key] = val
@@ -253,8 +262,8 @@ for key, val in {
 # ── Title ──────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="title-block">
-  <div class="title-block-h1">4PL MODEL FITTING</div>
-  <p>ELISA Standard Curve Analysis · Four-Parameter Logistic Regression</p>
+  <div class="title-block-h1">◈ 4PL MODEL FITTING</div>
+  <p>Four-Parameter Logistic Regression · Standard Curve Analysis</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -390,9 +399,12 @@ with left:
                     # Subtract zero standard OD (OD at concentration=0) from all OD values
                     zero_mask = conc == 0
                     if np.any(zero_mask):
-                        zero_od = np.mean(od[zero_mask])
+                        zero_od = float(np.mean(od[zero_mask]))
                         od = od - zero_od
-                        st.info(f"Zero standard OD ({zero_od:.4f}) subtracted from all OD values.")
+                        st.session_state.zero_od = zero_od
+                        st.info(f"Zero standard OD ({zero_od:.4f}) will be auto-subtracted from your sample ODs.")
+                    else:
+                        st.session_state.zero_od = 0.0
 
                     # Warn about duplicates but still allow fitting
                     dupes = check_duplicates(conc.tolist())
@@ -407,6 +419,7 @@ with left:
                         "concentration": conc,
                         "OD": od,
                         "last_od": None,
+    "last_raw_od": None,
                         "last_conc": None,
                         "last_extrapolated": False,
                         "fit_count": st.session_state.fit_count + 1,
@@ -455,18 +468,21 @@ with left:
     if calc_clicked:
         try:
             A, B, C, D = st.session_state.A, st.session_state.B, st.session_state.C, st.session_state.D
-            conc_val = inverse_four_param_logistic(sample_od, A, B, C, D)
+            corrected_od = sample_od - st.session_state.get("zero_od", 0.0)
+            conc_val = inverse_four_param_logistic(corrected_od, A, B, C, D)
             od_min = float(np.min(st.session_state.OD))
             od_max = float(np.max(st.session_state.OD))
             # Sample OD should be within the range of standard OD values
-            extrapolated = sample_od < od_min or sample_od > od_max
-            st.session_state.last_od          = sample_od
+            extrapolated = corrected_od < od_min or corrected_od > od_max
+            st.session_state.last_od          = corrected_od
+            st.session_state.last_raw_od       = sample_od
             st.session_state.last_conc        = conc_val
             st.session_state.last_extrapolated = extrapolated
             flag = " ⚠ extrapolated" if extrapolated else ""
             st.session_state.results.append({
                 "Model Fit #": st.session_state.fit_count,
-                "OD": round(sample_od, 4),
+                "OD (raw)": round(sample_od, 4),
+                "OD (corrected)": round(corrected_od, 4),
                 "Concentration": round(conc_val, 4),
                 "Note": "extrapolated" if extrapolated else ""
             })
@@ -479,13 +495,17 @@ with left:
         extrap = st.session_state.get("last_extrapolated", False)
         border_color = "#e8a020" if extrap else "#1a1a1a"
         extra_note = '<div style="color:#a06000;font-size:0.68rem;margin-top:6px">⚠ OD is outside standard curve range — treat with caution</div>' if extrap else ""
+        zero_od = st.session_state.get("zero_od", 0.0)
+        raw_od = st.session_state.get("last_raw_od", st.session_state.last_od)
+        correction_note = f'<div style="color:#888;font-size:0.65rem;margin-top:4px">zero-corrected: {st.session_state.last_od:.4f}</div>' if zero_od != 0.0 else ""
         st.markdown(f"""
         <div class="result-box" style="border-left-color:{border_color}">
             <div class="od-label">RESULT</div>
-            <span class="od-val">O.D. {st.session_state.last_od:.4f}</span>
+            <span class="od-val">O.D. {raw_od:.4f}</span>
             <span class="arrow">→</span>
             <span class="conc-val">{st.session_state.last_conc:.4f}</span>
             <span style="color:#aaa; font-size:0.75rem;"> conc</span>
+            {correction_note}
             {extra_note}
         </div>
         """, unsafe_allow_html=True)
