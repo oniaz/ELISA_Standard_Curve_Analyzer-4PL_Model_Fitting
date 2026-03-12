@@ -7,8 +7,8 @@ import pandas as pd
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="4PL Fitting",
-    page_icon="◈",
+    page_title="ELISA 4PL Fitting",
+    page_icon="favicon.png",
     layout="wide",
 )
 
@@ -268,8 +268,8 @@ for key, val in {
 # ── Title ──────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="title-block">
-  <div class="title-block-h1">◈ 4PL MODEL FITTING</div>
-  <p>Four-Parameter Logistic Regression · Standard Curve Analysis</p>
+  <div class="title-block-h1">4PL MODEL FITTING</div>
+  <p>ELISA Standard Curve Analysis · Four-Parameter Logistic Regression</p>
 </div>
 """, unsafe_allow_html=True)
 
